@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas SQL server ❤</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjUiIGZpbGw9IiNFNkZBMDAiLz4KPGNpcmNsZSBjeD0iMTQuNSIgY3k9IjE3LjUiIHI9IjcuNSIgZmlsbD0id2hpdGUiLz4KPGVsbGlwc2UgY3g9IjE3IiBjeT0iMTguNSIgcng9IjUiIHJ5PSI1LjUiIGZpbGw9ImJsYWNrIi8+CjxjaXJjbGUgY3g9IjM2LjUiIGN5PSIxNy41IiByPSI3LjUiIGZpbGw9IndoaXRlIi8+CjxjaXJjbGUgY3g9IjM4LjUiIGN5PSIxOC41IiByPSI1LjUiIGZpbGw9ImJsYWNrIi8+CjxwYXRoIGQ9Ik05IDMySDQxVjMyQzQxIDM4LjA3NTEgMzYuMDc1MSA0MyAzMCA0M0gyMEMxMy45MjQ5IDQzIDkgMzguMDc1MSA5IDMyVjMyWiIgZmlsbD0iYmxhY2siLz4KPHJlY3QgeD0iMTQiIHk9IjMyIiB3aWR0aD0iNiIgaGVpZ2h0PSI1IiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Prism.js CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        details {
+            background-color: #1e1e1e;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #ffcc00;
+        }
+        pre {
+            background-color: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            position: relative;
+            overflow: auto;
+        }
+        code {
+            color: #f8f8f2;
+        }
+        .copy-button {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 12px;
+            padding: 5px 8px;
+            border-radius: 4px;
+            background: #444;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .copy-button:hover {
+            background: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-1">Consultas SQL server</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <details open>
+                    <summary>Busca tablas con columna 'NombreColumna'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode1', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode1" class="language-sql">
+-- Busca tablas con columna 'NombreColumna'
+SELECT t.name AS Tabla, c.name AS Columna
+FROM sys.columns c JOIN sys.tables t ON c.object_id = t.object_id
+WHERE c.name = 'NombreColumna';
+                    </code></pre>
+                </details>
+
+                <details>
+                    <summary>Busca FK de la tabla 'NombreTabla'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode2', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode2" class="language-sql">
+-- Busca FK de la tabla 'NombreTabla'
+SELECT	fk_col.name AS [Columna FK], pk_tab.name AS [Tabla],pk_col.name AS [Columna PK de la tabla]
+FROM sys.foreign_key_columns fkc
+INNER JOIN sys.tables fk_tab ON fkc.parent_object_id = fk_tab.object_id
+INNER JOIN sys.columns fk_col ON fkc.parent_object_id = fk_col.object_id AND fkc.parent_column_id = fk_col.column_id
+INNER JOIN sys.tables pk_tab ON fkc.referenced_object_id = pk_tab.object_id
+INNER JOIN sys.columns pk_col ON fkc.referenced_object_id = pk_col.object_id AND fkc.referenced_column_id = pk_col.column_id
+WHERE fk_tab.name = 'NombreTabla';
+                    </code></pre>
+                </details>
+
+                <details>
+                    <summary>Busca PK de la tabla 'NombreTabla'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode3', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode3" class="language-sql">
+-- Busca PK de la tabla 'NombreTabla'
+SELECT c.name AS [Columnas PK]
+FROM sys.tables AS t
+INNER JOIN sys.columns AS c ON t.object_id = c.object_id
+INNER JOIN sys.key_constraints AS pk ON t.object_id = pk.parent_object_id
+INNER JOIN sys.index_columns AS ic ON pk.parent_object_id = ic.object_id AND c.column_id = ic.column_id
+WHERE t.name = 'NombreTabla' AND pk.type = 'PK';
+                    </code></pre>
+                </details>
+
+                <details>
+                    <summary>Lista columnas de la tabla 'NombreTabla'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode4', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode4" class="language-sql">
+-- Lista columnas de la tabla 'NombreTabla'
+SELECT c.name AS Columna
+FROM sys.columns c JOIN sys.tables t ON c.object_id = t.object_id
+WHERE t.name = 'NombreTabla'
+                    </code></pre>
+                </details>
+
+                <details>
+                    <summary>Busca SP que tenga la DB 'NombreBaseDatos'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode5', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode5" class="language-sql">
+-- Busca SP que tenga la DB 'NombreBaseDatos'
+SELECT ROUTINE_NAME AS [SP con la DB]
+FROM INFORMATION_SCHEMA.ROUTINES
+WHERE ROUTINE_DEFINITION LIKE '%NombreBaseDatos%' AND ROUTINE_TYPE = 'PROCEDURE';
+                    </code></pre>
+                </details>
+
+                <details>
+                    <summary>Busca SP que tengan la tabla 'NombreTabla'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode6', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode6" class="language-sql">
+-- Busca SP que tengan la tabla 'NombreTabla'
+SELECT p.name AS [SP con NombreTabla]
+FROM sys.procedures p JOIN sys.sql_modules m ON p.object_id = m.object_id
+WHERE m.definition LIKE '%NombreTabla%'
+                    </code></pre>
+                </details>
+
+                <details>
+                    <summary>Busca la tabla y su columna que contenga el dato 'Boleta de Venta'</summary>
+                    <button class="copy-button" onclick="copyToClipboard('sqlCode7', this)">
+                        <i class="bi bi-clipboard"></i> Copiar
+                    </button>
+                    <pre><code id="sqlCode6" class="language-sql">
+use CONTABILIDAD
+DECLARE @SearchValue NVARCHAR(MAX) = 'Boleta de Venta';
+DECLARE @SQL NVARCHAR(MAX) = '';
+DECLARE @TableName NVARCHAR(MAX);
+DECLARE @ColumnName NVARCHAR(MAX);
+-- Cursor para recorrer todas las tablas y columnas de tipo texto
+DECLARE cur CURSOR FOR
+SELECT 
+    t.name AS TableName, 
+    c.name AS ColumnName
+FROM sys.columns c
+INNER JOIN sys.tables t ON c.object_id = t.object_id
+INNER JOIN sys.types ty ON c.user_type_id = ty.user_type_id
+WHERE ty.name IN ('varchar', 'nvarchar', 'text', 'ntext', 'char');
+OPEN cur;
+FETCH NEXT FROM cur INTO @TableName, @ColumnName;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @SQL = '
+    IF EXISTS (SELECT 1 FROM [' + @TableName + '] WHERE [' + @ColumnName + '] LIKE ''%' + @SearchValue + '%'')
+    BEGIN
+        PRINT ''Encontrado en: ' + @TableName + '.' + @ColumnName + '''
+        SELECT * FROM [' + @TableName + '] WHERE [' + @ColumnName + '] LIKE ''%' + @SearchValue + '%''
+    END';
+    EXEC sp_executesql @SQL;
+    FETCH NEXT FROM cur INTO @TableName, @ColumnName;
+END
+CLOSE cur;
+DEALLOCATE cur;                        
+                    </code></pre>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+    <!-- Prism.js JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    
+    <script>
+        function copyToClipboard(elementId, button) {
+            const sqlCode = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(sqlCode)
+                .then(() => {
+                    button.innerHTML = '<i class="bi bi-check"></i> Copiado';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="bi bi-clipboard"></i> Copiar';
+                    }, 2000);
+                })
+                .catch((err) => {
+                    console.error('Error al copiar: ', err);
+                    alert('No se pudo copiar el código. Inténtalo de nuevo.');
+                });
+        }
+    </script>
+</body>
+</html>
